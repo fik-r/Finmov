@@ -1,0 +1,56 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.TransparentTheme">
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
+    </style>
+
+    <style name="TextHeading">
+        <item name="android:fontFamily">@font/chivo</item>
+    </style>
+    <style name="TextHeading.Big">
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="TextHeading.Big.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextHeading.Big.Black">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+    <style name="TextHeading.Big.Black.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextHeading.Medium">
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="TextHeading.Medium.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextHeading.Medium.Black">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+    <style name="TextHeading.Medium.Black.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextHeading.Small">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="TextHeading.Small.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextViewAll">
+        <item name="android:text">@string/view_all</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#78E2F5</item>
+        <item name="android:fontFamily">@font/chivo</item>
+    </style>
+</resources>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.main.MainActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="40dp">
+
+            <TextView
+                android:id="@+id/tv_now_showing"
+                style="@style/TextHeading.Big.Black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="40dp"
+                android:text="@string/now_showing"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_movies_in"
+                style="@style/TextHeading.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/movies_in"
+                app:layout_constraintBottom_toBottomOf="@+id/sp_movies_in"
+                app:layout_constraintStart_toStartOf="@+id/tv_now_showing"
+                app:layout_constraintTop_toTopOf="@+id/sp_movies_in" />
+
+            <Spinner
+                android:id="@+id/sp_movies_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/tv_now_showing"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/tv_movies_in"
+                app:layout_constraintTop_toBottomOf="@+id/tv_now_showing" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_now_showing"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_movies_in"
+                tools:targetApi="lollipop" />
+
+            <TextView
+                android:id="@+id/tv_upcoming_movies"
+                style="@style/TextHeading.Medium.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/upcoming_movies"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tv_now_showing"
+                app:layout_constraintTop_toBottomOf="@+id/rv_now_showing" />
+
+            <TextView
+                android:id="@+id/tv_view_all_movies"
+                style="@style/TextViewAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_upcoming_movies"
+                app:layout_constraintEnd_toEndOf="@+id/tv_now_showing"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/tv_upcoming_movies"
+                app:layout_constraintTop_toTopOf="@+id/tv_upcoming_movies" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_upcoming_movies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_upcoming_movies"
+                tools:targetApi="lollipop" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</layout>
