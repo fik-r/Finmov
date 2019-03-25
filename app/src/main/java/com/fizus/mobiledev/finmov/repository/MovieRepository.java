@@ -42,7 +42,9 @@ public class MovieRepository {
             UpcomingMoviesDao upcomingMoviesDao,
             MovieDao movieDao,
             SimilarMoviesDao similarMoviesDao,
-            RecommendationMoviesDao recommendationMoviesDao, PopularMoviesDao popularMoviesDao, TopRatedMoviesDao topRatedMoviesDao) {
+            RecommendationMoviesDao recommendationMoviesDao,
+            PopularMoviesDao popularMoviesDao,
+            TopRatedMoviesDao topRatedMoviesDao) {
         this.apiHelper = apiHelper;
         this.nowPlayingMoviesDao = nowPlayingMoviesDao;
         this.upcomingMoviesDao = upcomingMoviesDao;
@@ -66,6 +68,22 @@ public class MovieRepository {
         return Observable.concatArrayEager(
                 getUpcomingMoviesFromApi(page),
                 getUpcomingMoviesFromDb(page)
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    public Observable<List<Movie>> getPopularMovies(int page){
+        return Observable.concatArrayEager(
+                getPopularMoviesFromApi(page),
+                getPopularMoviesFromDb(page)
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    public Observable<List<Movie>> getTopRatedMovies(int page){
+        return Observable.concatArrayEager(
+                getTopRatedMoviesFromApi(page),
+                getTopRatedMoviesFromDb(page)
         );
     }
 
@@ -120,6 +138,32 @@ public class MovieRepository {
                 .flatMapObservable(upcomingMovies -> Observable.just(upcomingMovies.getMovies()));
     }
 
+    private Observable<List<Movie>> getPopularMoviesFromApi(int page){
+        return apiHelper.doGetPopularMovies(page)
+                .flatMapObservable(popularMovies -> {
+                    popularMoviesDao.insert(popularMovies);
+                    return Observable.just(popularMovies.getMovies());
+                });
+    }
+
+    private Observable<List<Movie>> getPopularMoviesFromDb(int page){
+        return popularMoviesDao.getPopularMoviesByPage(page)
+                .flatMapObservable(popularMovies -> Observable.just(popularMovies.getMovies()));
+    }
+
+    private Observable<List<Movie>> getTopRatedMoviesFromApi(int page){
+        return apiHelper.doGetTopRatedMovies(page)
+                .flatMapObservable(topRatedMovies -> {
+                    topRatedMoviesDao.insert(topRatedMovies);
+                    return Observable.just(topRatedMovies.getMovies());
+                });
+    }
+
+    private Observable<List<Movie>> getTopRatedMoviesFromDb(int page){
+        return topRatedMoviesDao.getTopRatedMoviesByPage(page)
+                .flatMapObservable(topRatedMovies -> Observable.just(topRatedMovies.getMovies()));
+    }
+
     private Single<Movie> getDetailMovieFromApi(long id) {
         return apiHelper.doGetDetailMovieById(id)
                 .flatMap(movie -> {
@@ -159,4 +203,5 @@ public class MovieRepository {
         return similarMoviesDao.getSimilarMoviesByMovieId(movieId, page)
                 .flatMapObservable(similarMovies -> Observable.just(similarMovies.getMovies()));
     }
+
 }

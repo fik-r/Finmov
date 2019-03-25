@@ -2,8 +2,10 @@ package com.fizus.mobiledev.finmov.data.network;
 
 import com.fizus.mobiledev.finmov.data.local.Movie;
 import com.fizus.mobiledev.finmov.data.local.NowPlayingMovies;
+import com.fizus.mobiledev.finmov.data.local.PopularMovies;
 import com.fizus.mobiledev.finmov.data.local.RecommendationMovies;
 import com.fizus.mobiledev.finmov.data.local.SimilarMovies;
+import com.fizus.mobiledev.finmov.data.local.TopRatedMovies;
 import com.fizus.mobiledev.finmov.data.local.UpcomingMovies;
 import com.fizus.mobiledev.finmov.data.network.responses.GetCreditsResponse;
 import com.fizus.mobiledev.finmov.data.network.responses.GetGenresResponse;
@@ -25,6 +27,18 @@ public interface ApiService {
     @GET("3/movie/upcoming")
     Single<UpcomingMovies> doGetUpcomingMovies(
             @Query("api_key") String ApiKey,
+            @Query("page") int page
+    );
+
+    @GET("3/movie/popular")
+    Single<PopularMovies> doGetPopularMovies(
+            @Query("api_key") String apiKey,
+            @Query("page") int page
+    );
+
+    @GET("3/movie/top_rated")
+    Single<TopRatedMovies> doGetTopRatedMovies(
+            @Query("api_key") String apiKey,
             @Query("page") int page
     );
 

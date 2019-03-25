@@ -6,7 +6,7 @@ import android.util.Log;
 import com.fizus.mobiledev.finmov.data.local.Genre;
 import com.fizus.mobiledev.finmov.data.local.Movie;
 import com.fizus.mobiledev.finmov.repository.MovieRepository;
-import com.fizus.mobiledev.finmov.utils.SchedulerProvider;
+import com.fizus.mobiledev.finmov.utils.rx.SchedulerProvider;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -96,6 +96,8 @@ public class DetailMovieViewModel extends ViewModel {
 
     @SuppressLint("DefaultLocale")
     public String getFormattedCurrency(long money){
+        if(money == 0)
+            return "Unknown";
         return String.format("%s%,.2f", "$", (float) money);
     }
 

@@ -2,8 +2,10 @@ package com.fizus.mobiledev.finmov.data.network;
 
 import com.fizus.mobiledev.finmov.data.local.Movie;
 import com.fizus.mobiledev.finmov.data.local.NowPlayingMovies;
+import com.fizus.mobiledev.finmov.data.local.PopularMovies;
 import com.fizus.mobiledev.finmov.data.local.RecommendationMovies;
 import com.fizus.mobiledev.finmov.data.local.SimilarMovies;
+import com.fizus.mobiledev.finmov.data.local.TopRatedMovies;
 import com.fizus.mobiledev.finmov.data.local.UpcomingMovies;
 
 import javax.inject.Inject;
@@ -47,6 +49,16 @@ public class ApiHelperImpl implements ApiHelper {
     @Override
     public Single<SimilarMovies> doGetSimilarMoviesByMovieId(long movieId, int page) {
         return client.doGetSimilarMoviesCall(movieId, apiKey, page);
+    }
+
+    @Override
+    public Single<PopularMovies> doGetPopularMovies(int page) {
+        return client.doGetPopularMovies(apiKey, page);
+    }
+
+    @Override
+    public Single<TopRatedMovies> doGetTopRatedMovies(int page) {
+        return client.doGetTopRatedMovies(apiKey, page);
     }
 
 }

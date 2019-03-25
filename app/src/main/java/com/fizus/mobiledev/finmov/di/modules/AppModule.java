@@ -5,8 +5,8 @@ import android.content.Context;
 
 import com.fizus.mobiledev.finmov.data.network.ApiHelper;
 import com.fizus.mobiledev.finmov.data.network.ApiHelperImpl;
-import com.fizus.mobiledev.finmov.utils.SchedulerProvider;
-import com.fizus.mobiledev.finmov.utils.SchedulerProviderImpl;
+import com.fizus.mobiledev.finmov.utils.rx.SchedulerProvider;
+import com.fizus.mobiledev.finmov.utils.rx.SchedulerProviderImpl;
 
 import dagger.Binds;
 import dagger.Module;

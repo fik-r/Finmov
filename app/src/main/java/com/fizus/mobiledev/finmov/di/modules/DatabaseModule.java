@@ -5,8 +5,10 @@ import android.app.Application;
 import com.fizus.mobiledev.finmov.FinmovDatabase;
 import com.fizus.mobiledev.finmov.data.local.MovieDao;
 import com.fizus.mobiledev.finmov.data.local.NowPlayingMoviesDao;
+import com.fizus.mobiledev.finmov.data.local.PopularMoviesDao;
 import com.fizus.mobiledev.finmov.data.local.RecommendationMoviesDao;
 import com.fizus.mobiledev.finmov.data.local.SimilarMoviesDao;
+import com.fizus.mobiledev.finmov.data.local.TopRatedMoviesDao;
 import com.fizus.mobiledev.finmov.data.local.UpcomingMoviesDao;
 import com.fizus.mobiledev.finmov.data.network.ApiHelper;
 import com.fizus.mobiledev.finmov.repository.MovieRepository;
@@ -60,13 +62,27 @@ public class DatabaseModule {
 
     @Singleton
     @Provides
+    PopularMoviesDao providePopularMoviesDao(FinmovDatabase finmovDatabase){
+        return finmovDatabase.getPopularMoviesDao();
+    }
+
+    @Singleton
+    @Provides
+    TopRatedMoviesDao provideTopRatedMoviesDao(FinmovDatabase finmovDatabase){
+        return finmovDatabase.getTopRatedMoviesDao();
+    }
+
+    @Singleton
+    @Provides
     MovieRepository provideMovieRepository(
             ApiHelper apiHelper,
             NowPlayingMoviesDao nowPlayingMoviesDao,
             UpcomingMoviesDao upcomingMoviesDao,
             MovieDao movieDao,
             RecommendationMoviesDao recommendationMoviesDao,
-            SimilarMoviesDao similarMoviesDao
+            SimilarMoviesDao similarMoviesDao,
+            PopularMoviesDao popularMoviesDao,
+            TopRatedMoviesDao topRatedMoviesDao
     ) {
         return new MovieRepository(
                 apiHelper,
@@ -74,7 +90,9 @@ public class DatabaseModule {
                 upcomingMoviesDao,
                 movieDao,
                 similarMoviesDao,
-                recommendationMoviesDao
+                recommendationMoviesDao,
+                popularMoviesDao,
+                topRatedMoviesDao
         );
     }
 

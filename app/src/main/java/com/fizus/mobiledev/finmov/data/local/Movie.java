@@ -3,7 +3,7 @@ package com.fizus.mobiledev.finmov.data.local;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.fizus.mobiledev.finmov.utils.GenreTypeConverters;
+import com.fizus.mobiledev.finmov.utils.converter.GenreTypeConverters;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

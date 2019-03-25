@@ -1,6 +1,6 @@
 package com.fizus.mobiledev.finmov.data.local;
 
-import com.fizus.mobiledev.finmov.utils.MovieTypeConverters;
+import com.fizus.mobiledev.finmov.utils.converter.MovieTypeConverters;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

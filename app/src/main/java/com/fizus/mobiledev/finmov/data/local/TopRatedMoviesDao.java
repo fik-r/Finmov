@@ -9,7 +9,7 @@ import io.reactivex.Single;
 @Dao
 public interface TopRatedMoviesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(PopularMovies popularMovies);
+    void insert(TopRatedMovies topRatedMovies);
 
     @Query("SELECT * FROM top_rated_movies WHERE page LIKE :page")
     Single<TopRatedMovies> getTopRatedMoviesByPage(int page);

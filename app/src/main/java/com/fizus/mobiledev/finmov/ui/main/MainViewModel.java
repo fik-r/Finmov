@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.fizus.mobiledev.finmov.data.local.Movie;
 import com.fizus.mobiledev.finmov.repository.MovieRepository;
-import com.fizus.mobiledev.finmov.utils.SchedulerProvider;
+import com.fizus.mobiledev.finmov.utils.rx.SchedulerProvider;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +24,8 @@ public class MainViewModel extends ViewModel {
     private final MovieRepository movieRepository;
     private final MutableLiveData<List<Movie>> nowPlayingMoviesLiveData;
     private final MutableLiveData<List<Movie>> upcomingMoviesLiveData;
+    private final MutableLiveData<List<Movie>> popularMoviesLiveData;
+    private final MutableLiveData<List<Movie>> topRatedMoviesLiveData;
 
     private final static String TAG = MainViewModel.class.getSimpleName();
 
@@ -34,6 +36,8 @@ public class MainViewModel extends ViewModel {
         this.movieRepository = movieRepository;
         this.nowPlayingMoviesLiveData = new MutableLiveData<>();
         this.upcomingMoviesLiveData = new MutableLiveData<>();
+        this.popularMoviesLiveData = new MutableLiveData<>();
+        this.topRatedMoviesLiveData = new MutableLiveData<>();
     }
 
     @Override
@@ -66,5 +70,31 @@ public class MainViewModel extends ViewModel {
                 }, throwable -> Log.e(TAG, "getUpcomingMovies: " + throwable.getLocalizedMessage()))
         );
         return upcomingMoviesLiveData;
+    }
+
+    public MutableLiveData<List<Movie>> getPopularMoviesLiveData(int page){
+        compositeDisposable.add(movieRepository.getPopularMovies(page)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .debounce(400, TimeUnit.MILLISECONDS)
+                .subscribe(movies -> {
+                    Log.e(TAG, "getPopularMoviesLiveData: " + movies.size() );
+                    popularMoviesLiveData.postValue(movies);
+                }, throwable -> Log.e(TAG, "getPopularMoviesLiveData: " + throwable.getLocalizedMessage()))
+        );
+        return popularMoviesLiveData;
+    }
+
+    public MutableLiveData<List<Movie>> getTopRatedMoviesLiveData(int page) {
+        compositeDisposable.add(movieRepository.getTopRatedMovies(page)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .debounce(400, TimeUnit.MILLISECONDS)
+                .subscribe(movies -> {
+                    Log.e(TAG, "getTopRatedMoviesLiveData: " + movies.size() );
+                    topRatedMoviesLiveData.postValue(movies);
+                })
+        );
+        return topRatedMoviesLiveData;
     }
 }

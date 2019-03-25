@@ -38,15 +38,20 @@ public class MainActivity extends DaggerAppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private MainViewModel viewModel;
-    private ActivityMainBinding binding;
-    private ListMovieAdapter nowPlayingMoviesAdapter;
-    private ListMovieAdapter upcomingMoviesAdapter;
+    private MainViewModel viewModel = null;
+    private ActivityMainBinding binding = null;
+    private ListMovieAdapter nowPlayingMoviesAdapter = null;
+    private ListMovieAdapter upcomingMoviesAdapter = null;
+    private ListMovieAdapter popularMoviesAdapter = null;
+    private ListMovieAdapter topRatedMoviesAdapter = null;
 
     private final List<Movie> nowPlayingMovies = new ArrayList<>();
     private final List<Movie> upcomingMovies = new ArrayList<>();
+    private final List<Movie> popularMovies = new ArrayList<>();
+    private final List<Movie> topRatedMovies = new ArrayList<>();
 
-    private DisplayMetrics displayMetrics;
+    private DisplayMetrics displayMetrics = null;
+
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
@@ -62,8 +67,12 @@ public class MainActivity extends DaggerAppCompatActivity {
         setupMoviesIn();
         setupNowPlayingMovies();
         setupUpcomingMovies();
+        setupPopularMovies();
+        setupTopRatedMovies();
 
         viewModel.getUpcomingMovies(1).observe(this, this::onBindUpcomingMovies);
+        viewModel.getPopularMoviesLiveData(1).observe(this, this::onBindPopularMovies);
+        viewModel.getTopRatedMoviesLiveData(1).observe(this, this::onBindTopRatedMovies);
     }
 
     private void setupMoviesIn() {
@@ -113,6 +122,34 @@ public class MainActivity extends DaggerAppCompatActivity {
         binding.rvUpcomingMovies.setAdapter(upcomingMoviesAdapter);
     }
 
+    private void setupPopularMovies(){
+        int heightForRecyclerView = Math.round(displayMetrics.heightPixels / 4.5f);
+        ConstraintLayout.LayoutParams layoutParams = new Constraints.LayoutParams(displayMetrics.widthPixels, heightForRecyclerView);
+        layoutParams.topToBottom = binding.tvPopularMovies.getId();
+        layoutParams.setMargins(0, 30, 0, 0);
+        binding.rvPopularMovies.setLayoutParams(layoutParams);
+        popularMoviesAdapter = new ListMovieAdapter(this, popularMovies, false,
+                position -> startDetailMovieActivity(popularMovies.get(position))
+        );
+        binding.rvPopularMovies.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        binding.rvPopularMovies.setHasFixedSize(true);
+        binding.rvPopularMovies.setAdapter(popularMoviesAdapter);
+    }
+
+    private void setupTopRatedMovies(){
+        int heightForRecyclerView = Math.round(displayMetrics.heightPixels / 4.5f);
+        ConstraintLayout.LayoutParams layoutParams = new Constraints.LayoutParams(displayMetrics.widthPixels, heightForRecyclerView);
+        layoutParams.topToBottom = binding.tvTopratedMovies.getId();
+        layoutParams.setMargins(0, 30, 0, 0);
+        binding.rvTopratedMovies.setLayoutParams(layoutParams);
+        topRatedMoviesAdapter = new ListMovieAdapter(this, topRatedMovies, false,
+                position -> startDetailMovieActivity(topRatedMovies.get(position))
+        );
+        binding.rvTopratedMovies.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        binding.rvTopratedMovies.setHasFixedSize(true);
+        binding.rvTopratedMovies.setAdapter(topRatedMoviesAdapter);
+    }
+
     private void onBindNowPlayingMovies(List<Movie> movies) {
         Log.e(TAG, "onBindNowPlayingMovies: " + movies.size());
         this.nowPlayingMovies.clear();
@@ -126,6 +163,20 @@ public class MainActivity extends DaggerAppCompatActivity {
         this.upcomingMovies.clear();
         this.upcomingMovies.addAll(movies);
         upcomingMoviesAdapter.notifyDataSetChanged();
+    }
+
+    private void onBindPopularMovies(List<Movie> movies){
+        Log.e(TAG, "onBindPopularMovies: " + movies.size());
+        this.popularMovies.clear();
+        this.popularMovies.addAll(movies);
+        popularMoviesAdapter.notifyDataSetChanged();
+    }
+
+    private void onBindTopRatedMovies(List<Movie> movies){
+        Log.e(TAG, "onBindTopRatedMovies: " + movies.size());
+        this.topRatedMovies.clear();
+        this.topRatedMovies.addAll(movies);
+        topRatedMoviesAdapter.notifyDataSetChanged();
     }
 
     private void startDetailMovieActivity(Movie movie) {
