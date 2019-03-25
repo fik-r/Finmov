@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:background="@color/colorPrimary">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Light">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingtoolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:contentScrim="@color/colorPrimary"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <ImageView
+                    android:id="@+id/iv_backdrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:scaleType="centerCrop"
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="parallax" />
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
+                    android:theme="@style/ThemeOverlay.MaterialComponents.Light"
+                    app:layout_collapseMode="pin" />
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/detailpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:behavior_overlapTop="60dp"
+            android:overScrollMode="never"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp">
+
+                <ImageView
+                    android:id="@+id/iv_poster"
+                    android:layout_width="135dp"
+                    android:layout_height="210dp"
+                    android:layout_marginStart="20dp"
+                    android:background="@android:color/white"
+                    android:elevation="10dp"
+                    android:scaleType="fitXY"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:targetApi="lollipop" />
+
+                <TextView
+                    android:id="@+id/tv_movie_name"
+                    style="@style/TextHeading.Big.Black.Bold"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginEnd="40dp"
+                    android:fontFamily="@font/oxygen"
+                    android:text="Ant-Man"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@+id/iv_poster"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_bookmark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_bookmark_border"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_movie_name" />
+
+                <TextView
+                    android:id="@+id/tv_movie_status"
+                    style="@style/TextHeading.Small.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/chivo"
+                    android:text="Post Production"
+                    app:layout_constraintStart_toStartOf="@+id/tv_movie_name"
+                    app:layout_constraintTop_toBottomOf="@id/tv_movie_name" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_watch_trailer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/watch_trailer"
+                    app:backgroundTint="@android:color/black"
+                    app:cornerRadius="6dp"
+                    app:icon="@drawable/ic_play"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_poster"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_movie_name"
+                    app:layout_constraintStart_toEndOf="@+id/iv_poster" />
+
+                <RatingBar
+                    android:id="@+id/rating_movie"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:numStars="10"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintBottom_toTopOf="@+id/btn_watch_trailer"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_movie_name" />
+
+                <LinearLayout
+                    android:id="@+id/linear_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:weightSum="3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_poster">
+
+                    <TextView
+                        android:id="@+id/tv_movie_runtime"
+                        style="@style/TextHeading.Small"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_time"
+                        android:drawablePadding="5dp"
+                        android:gravity="center"
+                        android:text="124 minutes"
+                        app:layout_constraintStart_toStartOf="@+id/iv_poster" />
+
+                    <TextView
+                        android:id="@+id/tv_movie_release_date"
+                        style="@style/TextHeading.Small"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_date"
+                        android:drawablePadding="5dp"
+                        android:gravity="center"
+                        android:text="24 Jan 2019"
+                        app:layout_constraintStart_toStartOf="@+id/iv_poster" />
+
+                    <TextView
+                        android:id="@+id/tv_movie_vote_count"
+                        style="@style/TextHeading.Small"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawableTop="@drawable/ic_vote_count"
+                        android:drawablePadding="5dp"
+                        android:gravity="center"
+                        android:text="240.000"
+                        app:layout_constraintStart_toStartOf="@+id/iv_poster" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_movie_genres"
+                    style="@style/TextHeading.Medium.Black.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/genres"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/linear_layout" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_movie_genres"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_movie_genres"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_movie_genres"
+                    tools:targetApi="lollipop" />
+
+                <TextView
+                    android:id="@+id/tv_overview"
+                    style="@style/TextHeading.Medium.Black.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/overview"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/rv_movie_genres" />
+
+                <TextView
+                    android:id="@+id/tv_movie_overview"
+                    style="@style/TextHeading.Small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:text="Lorem ipsum dolor sit amet."
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/tv_overview" />
+
+                <TextView
+                    android:id="@+id/tv_original_language"
+                    style="@style/TextHeading.Medium.Black.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/original_language"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/tv_movie_overview" />
+
+                <TextView
+                    android:id="@+id/tv_movie_original_language"
+                    style="@style/TextHeading.Small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:text="Lorem ipsum dolor sit amet."
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/tv_original_language" />
+
+                <TextView
+                    android:id="@+id/tv_budget"
+                    style="@style/TextHeading.Medium.Black.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/budget"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/tv_movie_original_language" />
+
+                <TextView
+                    android:id="@+id/tv_movie_budget"
+                    style="@style/TextHeading.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$154,330,220.00"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/tv_budget" />
+
+                <TextView
+                    android:id="@+id/tv_revenue"
+                    style="@style/TextHeading.Medium.Black.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/revenue"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/tv_movie_budget" />
+
+                <TextView
+                    android:id="@+id/tv_movie_revenue"
+                    style="@style/TextHeading.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$154,330,220.00"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/tv_revenue" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_cast_crew"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/cast_crew"
+                    app:cornerRadius="6dp"
+                    app:icon="@drawable/ic_cast_crew"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_movie_revenue" />
+
+                <TextView
+                    android:id="@+id/tv_similar"
+                    style="@style/TextHeading.Medium.Black.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/similar_movies"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/btn_cast_crew" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_movie_similar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_movie_genres"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_similar" />
+
+                <TextView
+                    android:id="@+id/tv_recommendation"
+                    style="@style/TextHeading.Medium.Black.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/recommendation_movies"
+                    app:layout_constraintStart_toStartOf="@+id/iv_poster"
+                    app:layout_constraintTop_toBottomOf="@id/rv_movie_similar" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_movie_recommendation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_movie_genres"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recommendation" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
