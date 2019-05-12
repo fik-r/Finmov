@@ -4,6 +4,7 @@ import com.fizus.mobiledev.finmov.di.ViewModelFactory;
 import com.fizus.mobiledev.finmov.di.ViewModelKey;
 import com.fizus.mobiledev.finmov.ui.detail.DetailMovieViewModel;
 import com.fizus.mobiledev.finmov.ui.main.MainViewModel;
+import com.fizus.mobiledev.finmov.ui.viewall.ViewAllViewModel;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,6 +23,11 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(DetailMovieViewModel.class)
     abstract ViewModel bindDetailMovieViewModel(DetailMovieViewModel detailMovieViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ViewAllViewModel.class)
+    abstract ViewModel bindViewAllViewModel(ViewAllViewModel viewAllViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(ViewModelFactory viewModelFactory);

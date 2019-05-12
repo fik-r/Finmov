@@ -3,14 +3,19 @@ package com.fizus.mobiledev.finmov.di.modules;
 import android.app.Application;
 
 import com.fizus.mobiledev.finmov.FinmovDatabase;
+import com.fizus.mobiledev.finmov.data.local.CastDao;
+import com.fizus.mobiledev.finmov.data.local.CrewDao;
 import com.fizus.mobiledev.finmov.data.local.MovieDao;
 import com.fizus.mobiledev.finmov.data.local.NowPlayingMoviesDao;
 import com.fizus.mobiledev.finmov.data.local.PopularMoviesDao;
 import com.fizus.mobiledev.finmov.data.local.RecommendationMoviesDao;
+import com.fizus.mobiledev.finmov.data.local.SearchResultMovies;
+import com.fizus.mobiledev.finmov.data.local.SearchResultMoviesDao;
 import com.fizus.mobiledev.finmov.data.local.SimilarMoviesDao;
 import com.fizus.mobiledev.finmov.data.local.TopRatedMoviesDao;
 import com.fizus.mobiledev.finmov.data.local.UpcomingMoviesDao;
 import com.fizus.mobiledev.finmov.data.network.ApiHelper;
+import com.fizus.mobiledev.finmov.data.network.responses.CreditsResponseDao;
 import com.fizus.mobiledev.finmov.repository.MovieRepository;
 
 import javax.inject.Singleton;
@@ -74,6 +79,29 @@ public class DatabaseModule {
 
     @Singleton
     @Provides
+    SearchResultMoviesDao provideSearchResultMovies(FinmovDatabase finmovDatabase){
+        return finmovDatabase.getSearchResultMoviesDao();
+    }
+    @Singleton
+    @Provides
+    CastDao provideCastDao(FinmovDatabase finmovDatabase){
+        return finmovDatabase.getCastDao();
+    }
+
+    @Singleton
+    @Provides
+    CrewDao provideCrewDao(FinmovDatabase finmovDatabase){
+        return finmovDatabase.getCrewDao();
+    }
+
+    @Singleton
+    @Provides
+    CreditsResponseDao provideCreditsResponseDao(FinmovDatabase finmovDatabase){
+        return finmovDatabase.getCreditsResponseDao();
+    }
+
+    @Singleton
+    @Provides
     MovieRepository provideMovieRepository(
             ApiHelper apiHelper,
             NowPlayingMoviesDao nowPlayingMoviesDao,
@@ -82,7 +110,11 @@ public class DatabaseModule {
             RecommendationMoviesDao recommendationMoviesDao,
             SimilarMoviesDao similarMoviesDao,
             PopularMoviesDao popularMoviesDao,
-            TopRatedMoviesDao topRatedMoviesDao
+            TopRatedMoviesDao topRatedMoviesDao,
+            SearchResultMoviesDao searchResultMoviesDao,
+            CastDao castDao,
+            CrewDao crewDao,
+            CreditsResponseDao creditsResponseDao
     ) {
         return new MovieRepository(
                 apiHelper,
@@ -92,7 +124,11 @@ public class DatabaseModule {
                 similarMoviesDao,
                 recommendationMoviesDao,
                 popularMoviesDao,
-                topRatedMoviesDao
+                topRatedMoviesDao,
+                searchResultMoviesDao,
+                castDao,
+                crewDao,
+                creditsResponseDao
         );
     }
 

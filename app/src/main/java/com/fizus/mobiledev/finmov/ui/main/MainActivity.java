@@ -6,15 +6,28 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+
+import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Constraints;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.fizus.mobiledev.finmov.R;
 import com.fizus.mobiledev.finmov.adapter.CountryAdapter;
 import com.fizus.mobiledev.finmov.adapter.ListMovieAdapter;
+import com.fizus.mobiledev.finmov.adapter.ViewAllAdapter;
 import com.fizus.mobiledev.finmov.data.local.Country;
 import com.fizus.mobiledev.finmov.data.local.Movie;
 import com.fizus.mobiledev.finmov.databinding.ActivityMainBinding;
 import com.fizus.mobiledev.finmov.ui.detail.DetailMovieActivity;
+import com.fizus.mobiledev.finmov.ui.viewall.ViewAllActivity;
+import com.fizus.mobiledev.finmov.utils.AppConstans;
 import com.fizus.mobiledev.finmov.utils.CountryUtil;
 import com.ramotion.cardslider.CardSliderLayoutManager;
 import com.ramotion.cardslider.CardSnapHelper;
@@ -24,36 +37,26 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.Constraints;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.DaggerAppCompatActivity;
 
 public class MainActivity extends DaggerAppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
+    private final List<Movie> nowPlayingMovies = new ArrayList<>();
+    private final List<Movie> upcomingMovies = new ArrayList<>();
+    private final List<Movie> popularMovies = new ArrayList<>();
+    private final List<Movie> topRatedMovies = new ArrayList<>();
+    private PagedList<Movie> searchResult = null;
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
     private MainViewModel viewModel = null;
     private ActivityMainBinding binding = null;
     private ListMovieAdapter nowPlayingMoviesAdapter = null;
     private ListMovieAdapter upcomingMoviesAdapter = null;
     private ListMovieAdapter popularMoviesAdapter = null;
     private ListMovieAdapter topRatedMoviesAdapter = null;
-
-    private final List<Movie> nowPlayingMovies = new ArrayList<>();
-    private final List<Movie> upcomingMovies = new ArrayList<>();
-    private final List<Movie> popularMovies = new ArrayList<>();
-    private final List<Movie> topRatedMovies = new ArrayList<>();
-
+    private ViewAllAdapter searchResultAdapter = null;
     private DisplayMetrics displayMetrics = null;
-
-    @Inject
-    ViewModelProvider.Factory viewModelFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +72,42 @@ public class MainActivity extends DaggerAppCompatActivity {
         setupUpcomingMovies();
         setupPopularMovies();
         setupTopRatedMovies();
+        setupSearchView();
+        setupResult();
 
         viewModel.getUpcomingMovies(1).observe(this, this::onBindUpcomingMovies);
         viewModel.getPopularMoviesLiveData(1).observe(this, this::onBindPopularMovies);
         viewModel.getTopRatedMoviesLiveData(1).observe(this, this::onBindTopRatedMovies);
+//        viewModel.getSearchResultLiveData().observe(this, this::onBindResult);
+
+        binding.tvViewAllUpcomingMovies.setOnClickListener(v -> startViewAllActivity(Movie.Type.UPCOMING));
+        binding.tvViewAllPopularMovies.setOnClickListener(v -> startViewAllActivity(Movie.Type.POPULAR));
+        binding.tvViewAllTopratedMovies.setOnClickListener(v -> startViewAllActivity(Movie.Type.TOP_RATED));
     }
 
+    private void setupSearchView(){
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                viewModel.onQueryTextChange(newText).observe(MainActivity.this, MainActivity.this::onBindResult);
+                return false;
+            }
+        });
+        binding.searchView.setOnSearchClickListener(v -> {
+
+        });
+        binding.searchView.setOnCloseListener(() -> {
+            searchResult.detach();
+            searchResultAdapter.notifyDataSetChanged();
+            binding.resultLayout.setVisibility(View.GONE);
+            return false;
+        });
+    }
     private void setupMoviesIn() {
         List<Country> countries = CountryUtil.getCountries();
         CountryAdapter countryAdapter = new CountryAdapter(countries);
@@ -122,7 +155,7 @@ public class MainActivity extends DaggerAppCompatActivity {
         binding.rvUpcomingMovies.setAdapter(upcomingMoviesAdapter);
     }
 
-    private void setupPopularMovies(){
+    private void setupPopularMovies() {
         int heightForRecyclerView = Math.round(displayMetrics.heightPixels / 4.5f);
         ConstraintLayout.LayoutParams layoutParams = new Constraints.LayoutParams(displayMetrics.widthPixels, heightForRecyclerView);
         layoutParams.topToBottom = binding.tvPopularMovies.getId();
@@ -136,7 +169,7 @@ public class MainActivity extends DaggerAppCompatActivity {
         binding.rvPopularMovies.setAdapter(popularMoviesAdapter);
     }
 
-    private void setupTopRatedMovies(){
+    private void setupTopRatedMovies() {
         int heightForRecyclerView = Math.round(displayMetrics.heightPixels / 4.5f);
         ConstraintLayout.LayoutParams layoutParams = new Constraints.LayoutParams(displayMetrics.widthPixels, heightForRecyclerView);
         layoutParams.topToBottom = binding.tvTopratedMovies.getId();
@@ -148,6 +181,13 @@ public class MainActivity extends DaggerAppCompatActivity {
         binding.rvTopratedMovies.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         binding.rvTopratedMovies.setHasFixedSize(true);
         binding.rvTopratedMovies.setAdapter(topRatedMoviesAdapter);
+    }
+
+    private void setupResult() {
+        searchResultAdapter = new ViewAllAdapter(this, position -> startDetailMovieActivity(searchResult.get(position)));
+        binding.rvResult.setLayoutManager(new GridLayoutManager(this, 3));
+        binding.rvResult.setHasFixedSize(true);
+        binding.rvResult.setAdapter(searchResultAdapter);
     }
 
     private void onBindNowPlayingMovies(List<Movie> movies) {
@@ -165,23 +205,38 @@ public class MainActivity extends DaggerAppCompatActivity {
         upcomingMoviesAdapter.notifyDataSetChanged();
     }
 
-    private void onBindPopularMovies(List<Movie> movies){
+    private void onBindPopularMovies(List<Movie> movies) {
         Log.e(TAG, "onBindPopularMovies: " + movies.size());
         this.popularMovies.clear();
         this.popularMovies.addAll(movies);
         popularMoviesAdapter.notifyDataSetChanged();
     }
 
-    private void onBindTopRatedMovies(List<Movie> movies){
+    private void onBindTopRatedMovies(List<Movie> movies) {
         Log.e(TAG, "onBindTopRatedMovies: " + movies.size());
         this.topRatedMovies.clear();
         this.topRatedMovies.addAll(movies);
         topRatedMoviesAdapter.notifyDataSetChanged();
     }
 
+    private void onBindResult(PagedList<Movie> result) {
+        if (result != null) {
+            Log.e(TAG, "onBindResult: " + result.size() );
+            binding.resultLayout.setVisibility(View.VISIBLE);
+            this.searchResult = result;
+            searchResultAdapter.submitList(searchResult);
+        }
+    }
+
     private void startDetailMovieActivity(Movie movie) {
         Intent intent = new Intent(this, DetailMovieActivity.class);
-        intent.putExtra(Movie.TAG, movie);
+        intent.putExtra(AppConstans.EXTRA_MOVIE, movie);
+        startActivity(intent);
+    }
+
+    private void startViewAllActivity(Movie.Type type) {
+        Intent intent = new Intent(this, ViewAllActivity.class);
+        intent.putExtra(AppConstans.EXTRA_MOVIE_TYPE, type);
         startActivity(intent);
     }
 }

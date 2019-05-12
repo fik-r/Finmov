@@ -11,7 +11,7 @@ import java.util.List;
 import androidx.room.TypeConverter;
 
 public class GenreTypeConverters {
-    static Gson gson = new Gson();
+    private static Gson gson = new Gson();
 
     @TypeConverter
     public static List<Genre> stringToGenres(String data) {

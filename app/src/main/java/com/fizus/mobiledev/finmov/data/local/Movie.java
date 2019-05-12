@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -16,8 +18,6 @@ import androidx.room.TypeConverters;
 
 @Entity(tableName = "movie")
 public class Movie implements Parcelable {
-
-    public static final String TAG = Movie.class.getSimpleName();
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
         @Override
@@ -246,4 +246,20 @@ public class Movie implements Parcelable {
         dest.writeInt(runtime);
         dest.writeString(originalLanguage);
     }
+
+    public enum Type {
+        NOW_PLAYING, UPCOMING, TOP_RATED, POPULAR, RECOMMENDATION, SIMILAR
+    }
+
+    public static DiffUtil.ItemCallback<Movie> DIFF_CALLBACK = new DiffUtil.ItemCallback<Movie>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Movie oldItem, @NonNull Movie newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Movie oldItem, @NonNull Movie newItem) {
+            return oldItem == newItem;
+        }
+    };
 }

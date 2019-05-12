@@ -26,17 +26,17 @@ public class ExampleUnitTest {
         Observable.just(strings)
                 .flatMap(new Function<String[], ObservableSource<String>>() {
                     @Override
-                    public ObservableSource<String> apply(String[] strings) throws Exception {
+                    public ObservableSource<String> apply(String[] strings) {
                         return Observable.fromArray(strings);
                     }
                 }).subscribe(new Consumer<String>() {
                                  @Override
-                                 public void accept(String s) throws Exception {
+                                 public void accept(String s) {
                                      System.out.println(s);
                                  }
                              }, new Consumer<Throwable>() {
                                  @Override
-                                 public void accept(Throwable throwable) throws Exception {
+                                 public void accept(Throwable throwable) {
                                      System.out.println(throwable.getLocalizedMessage());
                                  }
                              }

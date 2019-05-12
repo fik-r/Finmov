@@ -6,17 +6,21 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.fizus.mobiledev.finmov.R;
+import com.fizus.mobiledev.finmov.adapter.CastCrewAdapter;
 import com.fizus.mobiledev.finmov.adapter.GenresAdapter;
 import com.fizus.mobiledev.finmov.adapter.ListMovieAdapter;
+import com.fizus.mobiledev.finmov.data.local.Cast;
+import com.fizus.mobiledev.finmov.data.local.Crew;
 import com.fizus.mobiledev.finmov.data.local.Genre;
 import com.fizus.mobiledev.finmov.data.local.Movie;
 import com.fizus.mobiledev.finmov.databinding.ActivityDetailMovieBinding;
+import com.fizus.mobiledev.finmov.utils.AppConstans;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +45,14 @@ public class DetailMovieActivity extends DaggerAppCompatActivity {
     private final List<Movie> recommendationMovies = new ArrayList<>();
     private final List<Movie> similarMovies = new ArrayList<>();
     private final List<Genre> genresMovies = new ArrayList<>();
+    private final List<Cast> casts = new ArrayList<>();
+    private final List<Crew> crews = new ArrayList<>();
     @Inject
     ViewModelProvider.Factory viewModelFactory;
     private ListMovieAdapter recommendationMoviesAdapter;
     private ListMovieAdapter similarMoviesAdapter;
+    private CastCrewAdapter crewAdapter;
+    private CastCrewAdapter castAdapter;
     private GenresAdapter genresAdapter;
     private DetailMovieViewModel viewModel;
     private ActivityDetailMovieBinding binding;
@@ -52,7 +60,7 @@ public class DetailMovieActivity extends DaggerAppCompatActivity {
     private int heightForRecyclerViewMovies;
     private int scrollRange = -1;
     private boolean isShow = false;
-
+    private DisplayMetrics displayMetrics;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +70,7 @@ public class DetailMovieActivity extends DaggerAppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(DetailMovieViewModel.class);
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
+        displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         widthForRecyclerViewMovies = displayMetrics.widthPixels;
         heightForRecyclerViewMovies = Math.round(displayMetrics.heightPixels / 4.5f);
@@ -70,15 +78,19 @@ public class DetailMovieActivity extends DaggerAppCompatActivity {
         setupGenres();
         setupSimilarMovies();
         setupRecommendationMovies();
+        setupCastsMovie();
+        setupCrewsMovie();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            Movie movie = extras.getParcelable(Movie.TAG);
+            Movie movie = extras.getParcelable(AppConstans.EXTRA_MOVIE);
             onBindMovieFirst(movie);
             viewModel.getDetailMovie(movie.getId()).observe(this, this::onBindMovie);
             viewModel.getGenres().observe(this, this::onBindGenres);
             viewModel.getRecommendationMovieLiveData().observe(this, this::onBindRecommendationMovies);
             viewModel.getSimilarMoviesLiveData().observe(this, this::onBindSimilarMovies);
+            viewModel.getCastsMovieLiveData().observe(this, this::onBindCastsMovie);
+            viewModel.getCrewsMovieLiveData().observe(this, this::onBindCrewsMovie);
         }
     }
 
@@ -94,6 +106,32 @@ public class DetailMovieActivity extends DaggerAppCompatActivity {
         binding.rvMovieGenres.setLayoutManager(new FlexboxLayoutManager(this, FlexDirection.ROW));
         binding.rvMovieGenres.setHasFixedSize(true);
         binding.rvMovieGenres.setAdapter(genresAdapter);
+    }
+
+    private void setupCastsMovie(){
+        widthForRecyclerViewMovies = displayMetrics.widthPixels;
+        heightForRecyclerViewMovies = Math.round(displayMetrics.heightPixels / 3f);
+        ConstraintLayout.LayoutParams layoutParams = new Constraints.LayoutParams(widthForRecyclerViewMovies, heightForRecyclerViewMovies);
+        layoutParams.topToBottom = binding.tvCast.getId();
+        layoutParams.setMargins(0, 20, 0, 0);
+        binding.rvMovieCast.setLayoutParams(layoutParams);
+        castAdapter = new CastCrewAdapter(null, casts);
+        binding.rvMovieCast.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        binding.rvMovieCast.setHasFixedSize(true);
+        binding.rvMovieCast.setAdapter(castAdapter);
+    }
+
+    private void setupCrewsMovie(){
+        widthForRecyclerViewMovies = displayMetrics.widthPixels;
+        heightForRecyclerViewMovies = Math.round(displayMetrics.heightPixels / 3f);
+        ConstraintLayout.LayoutParams layoutParams = new Constraints.LayoutParams(widthForRecyclerViewMovies, heightForRecyclerViewMovies);
+        layoutParams.topToBottom = binding.tvCrew.getId();
+        layoutParams.setMargins(0, 20, 0, 0);
+        binding.rvMovieCrew.setLayoutParams(layoutParams);
+        crewAdapter = new CastCrewAdapter(crews, null);
+        binding.rvMovieCrew.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        binding.rvMovieCrew.setHasFixedSize(true);
+        binding.rvMovieCrew.setAdapter(crewAdapter);
     }
 
     private void setupSimilarMovies() {
@@ -129,6 +167,11 @@ public class DetailMovieActivity extends DaggerAppCompatActivity {
     }
 
     private void onBindSimilarMovies(List<Movie> movies) {
+        if(movies.size() <= 0) {
+            binding.rvMovieSimilar.setVisibility(View.GONE);
+            binding.tvSimilar.setVisibility(View.GONE);
+            return;
+        }
         Log.e(TAG, "onBindSimilarMovies: " + movies.size());
         this.similarMovies.clear();
         this.similarMovies.addAll(movies);
@@ -136,6 +179,11 @@ public class DetailMovieActivity extends DaggerAppCompatActivity {
     }
 
     private void onBindRecommendationMovies(List<Movie> movies) {
+        if(movies.size() <= 0) {
+            binding.rvMovieRecommendation.setVisibility(View.GONE);
+            binding.tvRecommendation.setVisibility(View.GONE);
+            return;
+        }
         Log.e(TAG, "onBindRecommendationMovies: " + movies.size());
         this.recommendationMovies.clear();
         this.recommendationMovies.addAll(movies);
@@ -159,9 +207,11 @@ public class DetailMovieActivity extends DaggerAppCompatActivity {
         });
         Glide.with(this)
                 .load(BASE_URL_W300 + movie.getPosterPath())
+                .apply(AppConstans.getOptionsDefault())
                 .into(binding.ivPoster);
         Glide.with(this)
                 .load(BASE_URL_W500 + movie.getBackdropPath())
+                .apply(AppConstans.getOptionsDefault())
                 .into(binding.ivBackdrop);
         binding.tvMovieName.setText(movie.getTitle());
         binding.ratingMovie.setRating(movie.getVoteAverage());
@@ -178,9 +228,35 @@ public class DetailMovieActivity extends DaggerAppCompatActivity {
         binding.tvMovieRevenue.setText(viewModel.getFormattedCurrency(movie.getRevenue()));
     }
 
+    private void onBindCastsMovie(List<Cast> casts){
+        if(casts.size() <= 0) {
+            binding.rvMovieCast.setVisibility(View.GONE);
+            binding.tvCast.setVisibility(View.GONE);
+            return;
+        }
+        String cast = getString(R.string.cast);
+        binding.tvCast.setText(cast + " (" + casts.size() + ")");
+        this.casts.clear();
+        this.casts.addAll(casts);
+        this.castAdapter.notifyDataSetChanged();
+    }
+
+    private void onBindCrewsMovie(List<Crew> crews){
+        if(crews.size() <= 0) {
+            binding.rvMovieCrew.setVisibility(View.GONE);
+            binding.tvCrew.setVisibility(View.GONE);
+            return;
+        }
+        String crew = getString(R.string.crew);
+        binding.tvCrew.setText(crew + " (" + crews.size() + ")" );
+        this.crews.clear();
+        this.crews.addAll(crews);
+        this.crewAdapter.notifyDataSetChanged();
+    }
+
     private void startDetailMovieActivity(Movie movie) {
         Intent intent = new Intent(this, DetailMovieActivity.class);
-        intent.putExtra(Movie.TAG, movie);
+        intent.putExtra(AppConstans.EXTRA_MOVIE, movie);
         startActivity(intent);
     }
 }

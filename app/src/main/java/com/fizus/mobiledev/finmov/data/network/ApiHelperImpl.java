@@ -4,9 +4,11 @@ import com.fizus.mobiledev.finmov.data.local.Movie;
 import com.fizus.mobiledev.finmov.data.local.NowPlayingMovies;
 import com.fizus.mobiledev.finmov.data.local.PopularMovies;
 import com.fizus.mobiledev.finmov.data.local.RecommendationMovies;
+import com.fizus.mobiledev.finmov.data.local.SearchResultMovies;
 import com.fizus.mobiledev.finmov.data.local.SimilarMovies;
 import com.fizus.mobiledev.finmov.data.local.TopRatedMovies;
 import com.fizus.mobiledev.finmov.data.local.UpcomingMovies;
+import com.fizus.mobiledev.finmov.data.network.responses.GetCreditsResponse;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -59,6 +61,16 @@ public class ApiHelperImpl implements ApiHelper {
     @Override
     public Single<TopRatedMovies> doGetTopRatedMovies(int page) {
         return client.doGetTopRatedMovies(apiKey, page);
+    }
+
+    @Override
+    public Single<GetCreditsResponse> doGetMovieCreditsCall(long movieId) {
+        return client.doGetMovieCreditsCall(movieId, apiKey);
+    }
+
+    @Override
+    public Single<SearchResultMovies> doSearchMoviesByQuery(String query, int page) {
+        return client.doSearchMovie(apiKey, query, page);
     }
 
 }

@@ -4,6 +4,7 @@ import com.fizus.mobiledev.finmov.data.local.Movie;
 import com.fizus.mobiledev.finmov.data.local.NowPlayingMovies;
 import com.fizus.mobiledev.finmov.data.local.PopularMovies;
 import com.fizus.mobiledev.finmov.data.local.RecommendationMovies;
+import com.fizus.mobiledev.finmov.data.local.SearchResultMovies;
 import com.fizus.mobiledev.finmov.data.local.SimilarMovies;
 import com.fizus.mobiledev.finmov.data.local.TopRatedMovies;
 import com.fizus.mobiledev.finmov.data.local.UpcomingMovies;
@@ -81,7 +82,7 @@ public interface ApiService {
     );
 
     @GET("3/search/movie")
-    Single<NowPlayingMovies> doSearchMovie(
+    Single<SearchResultMovies> doSearchMovie(
             @Query("api_key") String apiKey,
             @Query("query") String query,
             @Query("page") int page

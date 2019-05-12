@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -18,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.fizus.mobiledev.finmov.R;
 import com.fizus.mobiledev.finmov.data.local.Movie;
+import com.fizus.mobiledev.finmov.utils.AppConstans;
 import com.github.ybq.android.spinkit.SpinKitView;
 
 import java.util.List;
@@ -33,8 +33,6 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
     private static final int VIEW_TYPE_NORMAL = 1;
     private static final int VIEW_TYPE_EMPTY = 0;
     private static final int VIEW_TYPE_NOWSHOWING = 2;
-    private static final String BASE_URL_W500 = "https://image.tmdb.org/t/p/w500";
-    private static final String BASE_URL_W300 = "https://image.tmdb.org/t/p/w300";
     private final boolean isNowShowing;
     private final Callback callback;
 
@@ -83,14 +81,13 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
 
     @Override
     public int getItemViewType(int position) {
-        if (movies != null && movies.size() > 0) {
+        if (movies.size() > 0) {
             if (isNowShowing) return VIEW_TYPE_NOWSHOWING;
             else return VIEW_TYPE_NORMAL;
         } else return VIEW_TYPE_EMPTY;
     }
 
     static class ListMovieViewHolder extends RecyclerView.ViewHolder {
-        private ViewSwitcher vsPoster;
         private ImageView ivPoster;
         private SpinKitView loading;
         private Context context;
@@ -117,7 +114,7 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
                     .error(R.drawable.placeholder);
 
             Glide.with(itemView)
-                    .load((isNowShowing ? BASE_URL_W500 : BASE_URL_W300) + movie.getPosterPath())
+                    .load((isNowShowing ? AppConstans.BASE_URL_W500 : AppConstans.BASE_URL_W300) + movie.getPosterPath())
                     .addListener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

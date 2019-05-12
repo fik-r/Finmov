@@ -3,6 +3,8 @@ package com.fizus.mobiledev.finmov.ui.detail;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import com.fizus.mobiledev.finmov.data.local.Cast;
+import com.fizus.mobiledev.finmov.data.local.Crew;
 import com.fizus.mobiledev.finmov.data.local.Genre;
 import com.fizus.mobiledev.finmov.data.local.Movie;
 import com.fizus.mobiledev.finmov.repository.MovieRepository;
@@ -32,6 +34,8 @@ public class DetailMovieViewModel extends ViewModel {
     private final MutableLiveData<List<Movie>> similarMoviesLiveData;
     private final MutableLiveData<List<Movie>> recommendationMovieLiveData;
     private final MutableLiveData<List<Genre>> genresLiveData;
+    private final MutableLiveData<List<Cast>> castsLiveData;
+    private final MutableLiveData<List<Crew>> crewsLiveData;
 
     @Inject
     public DetailMovieViewModel(MovieRepository movieRepository, SchedulerProvider schedulerProvider) {
@@ -42,6 +46,8 @@ public class DetailMovieViewModel extends ViewModel {
         this.similarMoviesLiveData = new MutableLiveData<>();
         this.recommendationMovieLiveData = new MutableLiveData<>();
         this.genresLiveData = new MutableLiveData<>();
+        this.castsLiveData = new MutableLiveData<>();
+        this.crewsLiveData = new MutableLiveData<>();
     }
 
     @Override
@@ -57,19 +63,21 @@ public class DetailMovieViewModel extends ViewModel {
                         .debounce(400, TimeUnit.MILLISECONDS),
                 movieRepository.getRecommendationMovies(id, 1)
                         .subscribeOn(schedulerProvider.io())
-                        .observeOn(schedulerProvider.ui())
                         .debounce(400, TimeUnit.MILLISECONDS),
                 movieRepository.getSimilarMovies(id, 1)
                         .subscribeOn(schedulerProvider.io())
-                        .observeOn(schedulerProvider.ui())
                         .debounce(400, TimeUnit.MILLISECONDS),
-                (detailMovie, recommendationMovies, similarMovies) -> {
+                movieRepository.getCreditsMovie(id)
+                        .subscribeOn(schedulerProvider.io())
+                        .debounce(400, TimeUnit.MILLISECONDS),
+                (detailMovie, recommendationMovies, similarMovies, credits) -> {
                     similarMoviesLiveData.postValue(similarMovies);
                     recommendationMovieLiveData.postValue(recommendationMovies);
+                    castsLiveData.postValue(credits.getCast());
+                    crewsLiveData.postValue(credits.getCrew());
                     return detailMovie;
                 })
                 .subscribeOn(schedulerProvider.newThread())
-                .observeOn(schedulerProvider.ui())
                 .subscribe(movie -> {
                     genresLiveData.postValue(movie.getGenres());
                     movieLiveData.postValue(movie);
@@ -77,9 +85,10 @@ public class DetailMovieViewModel extends ViewModel {
         return movieLiveData;
     }
 
-    public MutableLiveData<List<Genre>> getGenres(){
+    public MutableLiveData<List<Genre>> getGenres() {
         return genresLiveData;
     }
+
     public MutableLiveData<List<Movie>> getSimilarMoviesLiveData() {
         return similarMoviesLiveData;
     }
@@ -88,24 +97,33 @@ public class DetailMovieViewModel extends ViewModel {
         return recommendationMovieLiveData;
     }
 
-    public String convertMinutesToHours(int minutes){
+    public MutableLiveData<List<Cast>> getCastsMovieLiveData(){
+        return castsLiveData;
+    }
+
+    public MutableLiveData<List<Crew>> getCrewsMovieLiveData(){
+        return crewsLiveData;
+    }
+
+    public String convertMinutesToHours(int minutes) {
         long hours = TimeUnit.MINUTES.toHours(minutes);
         long remainMinutes = minutes - TimeUnit.HOURS.toMinutes(hours);
         return hours + "h " + remainMinutes + "m";
     }
 
     @SuppressLint("DefaultLocale")
-    public String getFormattedCurrency(long money){
-        if(money == 0)
+    public String getFormattedCurrency(long money) {
+        if (money == 0)
             return "Unknown";
         return String.format("%s%,.2f", "$", (float) money);
     }
 
     @SuppressLint("DefaultLocale")
-    public String getFormattedVoteCount(long voteCount){
+    public String getFormattedVoteCount(long voteCount) {
         return String.format("%,d", voteCount);
     }
 
+    @SuppressLint("SimpleDateFormat")
     public String getFormattedDate(String date) {
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-DD");
         Date formattedDate = null;

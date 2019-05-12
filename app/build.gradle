@@ -83,4 +83,10 @@ dependencies {
 
     //spinkit
     implementation "com.github.ybq:Android-SpinKit:$spinkit_version"
+
+    //paging
+    implementation "android.arch.paging:runtime:$arch_version"
+
+    //circle image view
+    implementation "de.hdodenhof:circleimageview:$circle_image_version"
 }

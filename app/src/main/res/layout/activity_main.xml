@@ -6,12 +6,51 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
+        android:background="#FAFAFA"
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:paddingBottom="40dp">
+
+            <LinearLayout
+                android:id="@+id/top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_top"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingStart="15dp"
+                android:paddingTop="15dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/oxygen"
+                    android:text="@string/app_name"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/search_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="50dp"
+                    android:background="@drawable/bg_search"
+                    android:theme="@style/ThemeOverlay.MaterialComponents.Dark" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_now_showing"
@@ -19,12 +58,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="40dp"
                 android:text="@string/now_showing"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/top" />
 
             <TextView
                 android:id="@+id/tv_movies_in"
@@ -65,6 +104,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/rv_now_showing" />
 
             <ImageView
+                android:id="@+id/iv_refresh_upcoming"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:paddingStart="5dp"
@@ -109,11 +149,26 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_now_showing"
                 app:layout_constraintTop_toBottomOf="@+id/rv_upcoming_movies" />
 
+            <ImageView
+                android:id="@+id/iv_refresh_popular"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:src="@drawable/ic_sync_17dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_view_all_popular_movies"
+                app:layout_constraintEnd_toStartOf="@+id/tv_view_all_popular_movies"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@+id/tv_popular_movies"
+                app:layout_constraintTop_toTopOf="@+id/tv_view_all_popular_movies" />
+
             <TextView
                 android:id="@+id/tv_view_all_popular_movies"
                 style="@style/TextViewAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_popular_movies"
                 app:layout_constraintEnd_toEndOf="@+id/tv_now_showing"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -140,11 +195,26 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_now_showing"
                 app:layout_constraintTop_toBottomOf="@+id/rv_popular_movies" />
 
+            <ImageView
+                android:id="@+id/iv_refresh_toprated"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:src="@drawable/ic_sync_17dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_view_all_toprated_movies"
+                app:layout_constraintEnd_toStartOf="@+id/tv_view_all_toprated_movies"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toEndOf="@+id/tv_toprated_movies"
+                app:layout_constraintTop_toTopOf="@+id/tv_view_all_toprated_movies" />
+
             <TextView
                 android:id="@+id/tv_view_all_toprated_movies"
                 style="@style/TextViewAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_toprated_movies"
                 app:layout_constraintEnd_toEndOf="@+id/tv_now_showing"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -160,6 +230,40 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_toprated_movies" />
+
+            <LinearLayout
+                android:id="@+id/result_layout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:background="#FAFAFA"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/top">
+
+                <TextView
+                    android:id="@+id/tv_result"
+                    style="@style/TextHeading.Big.Black.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="40dp"
+                    android:text="@string/result" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
